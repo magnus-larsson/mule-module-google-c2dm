@@ -24,6 +24,7 @@ import org.mule.api.MuleEvent;
 import org.mule.construct.Flow;
 import org.mule.tck.FunctionalTestCase;
 import org.mule.tck.AbstractMuleTestCase;
+import org.mule.transport.NullPayload;
 
 import org.junit.Test;
 
@@ -36,9 +37,27 @@ public class GoogleC2dmModuleTest extends FunctionalTestCase
     }
 
     @Test
-    public void testFlow() throws Exception
+    public void testFlow0() throws Exception
     {
-        runFlowAndExpect("testFlow", "Another string");
+        runFlowAndExpect("testFlow0", NullPayload.getInstance());
+    }
+
+    @Test
+    public void testFlow1() throws Exception
+    {
+        runFlowAndExpect("testFlow1", NullPayload.getInstance());
+    }
+
+    @Test
+    public void testFlow2() throws Exception
+    {
+        runFlowAndExpect("testFlow2", NullPayload.getInstance());
+    }
+
+    @Test
+    public void testFlow3() throws Exception
+    {
+        runFlowAndExpect("testFlow3", NullPayload.getInstance());
     }
 
     /**

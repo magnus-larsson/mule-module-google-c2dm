@@ -21,10 +21,13 @@
 package org.mule.modules.googlec2dm;
 
 import org.mule.api.annotations.Module;
-import org.mule.api.ConnectionException;
 import org.mule.api.annotations.Configurable;
 import org.mule.api.annotations.Processor;
+import org.mule.api.annotations.param.Default;
+import org.mule.api.annotations.param.Optional;
 import org.mule.modules.googlec2dm.server.mule.C2dmConnector;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Generic module
@@ -34,6 +37,9 @@ import org.mule.modules.googlec2dm.server.mule.C2dmConnector;
 @Module(name="googlec2dm", schemaVersion="1.0.0-SNAPSHOT")
 public class GoogleC2dmModule
 {
+
+	private static Logger logger = LoggerFactory.getLogger(GoogleC2dmModule.class);
+
 	C2dmConnector connector = null;
 
 	/**
@@ -49,7 +55,7 @@ public class GoogleC2dmModule
      */
     public void setSource(String source)
     {
-    	System.err.println("*** SET SOURCE");
+    	logger.debug("SET SOURCE");
         this.source = source;
     }
 
@@ -66,7 +72,7 @@ public class GoogleC2dmModule
      */
     public void setUsername(String username)
     {
-    	System.err.println("*** SET username");
+    	logger.debug("SET username");
         this.username = username;
     }
 
@@ -83,7 +89,7 @@ public class GoogleC2dmModule
      */
     public void setPassword(String password)
     {
-    	System.err.println("*** SET password");
+    	logger.debug("SET password");
         this.password = password;
     }
 
@@ -91,26 +97,28 @@ public class GoogleC2dmModule
      * Configurable
      */
     @Configurable
-    private boolean test;
+    @Optional 
+    @Default("false")
+    private boolean testMode;
 
     /**
      * Set property
      *
      * @param test True means that c2dm will not be called
      */
-    public void setTest(boolean test)
+    public void setTestMode(boolean testMode)
     {
-    	System.err.println("*** SET TEST");
-        this.test = test;
+    	logger.debug("SET TEST MODE");
+        this.testMode = testMode;
     }
 
     public GoogleC2dmModule () {
-    	System.err.println("*** GoogleC2dmModule instance created, b1");    	
+    	logger.debug("GoogleC2dmModule instance created, b1");
     }
 
     protected C2dmConnector getConnector() {
     	if (connector == null) {
-        	System.err.println("*** Creates an C2dmConnector instance");    	
+    		logger.debug("Creates an C2dmConnector instance");    	
 	    	connector = new C2dmConnector();
 	    	connector.setSource(source);
 	    	connector.setUsername(username);
@@ -124,21 +132,24 @@ public class GoogleC2dmModule
      *
      * {@sample.xml ../../../doc/GoogleC2dm-connector.xml.sample googlec2dm:my-processor}
      *
-     * @param registrationId The id of the Android device that shall receive the notification
+     * @param registrationIds The ids of the Android device that shall receive the notification, sent as a comma separated string with no space
      * @param subject The subject
      * @param message The message
-     * @return Some string
      */
     @Processor
-    public String push(String registrationId, String subject, String message)
+    public void push(String registrationIds, String subject, String message)
     {
-        if (test) {
-        	System.err.println("*** PUSH TEST");
-        	return message;
+    	String[] regIdArr = (registrationIds == null || registrationIds.trim().length() == 0) ? new String[0] : registrationIds.split(",");
+
+    	if (testMode) {
+    		logger.debug("PUSH TEST FOR " + regIdArr.length + " ID's");
+        	return;
         }
 
-    	System.err.println("*** PUSH");
-      	getConnector().getPushService().push(registrationId, subject, message);
-        return message;
+    	logger.debug("PUSH " + regIdArr.length + " ID's");
+		for (String registrationId : regIdArr) {
+	    	logger.debug("PUSH TO ID [{}]", registrationId);
+          	getConnector().getPushService().push(registrationId, subject, message);
+		}
     }
 }

@@ -27,10 +27,19 @@
         http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
         http://www.mulesoft.org/schema/mule/googlec2dm http://www.mulesoft.org/schema/mule/googlec2dm/1.0.0-SNAPSHOT/mule-googlec2dm.xsd">
 
-    <googlec2dm:config test="true" source="src" username="xxx" password="yyy"/>
+    <googlec2dm:config testMode="true" source="src" username="xxx" password="yyy"/>
 
-    <flow name="testFlow">
-        <googlec2dm:push registrationId="Another string" subject="Another string" message="Another string"/>
+    <flow name="testFlow0">
+        <googlec2dm:push registrationIds="" subject="Another string" message="Another string"/>
+    </flow>
+    <flow name="testFlow1">
+        <googlec2dm:push registrationIds="regid1" subject="Another string" message="Another string"/>
+    </flow>
+    <flow name="testFlow2">
+        <googlec2dm:push registrationIds="regid1,regid2" subject="Another string" message="Another string"/>
+    </flow>
+    <flow name="testFlow3">
+        <googlec2dm:push registrationIds="regid1,regid2,regid3" subject="Another string" message="Another string"/>
     </flow>
 
 </mule>
