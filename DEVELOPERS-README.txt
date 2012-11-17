@@ -1,3 +1,5 @@
+DEVELOPER NOTES
+
 1. This project was cretated with the mvn command:
 
 mvn archetype:generate \
